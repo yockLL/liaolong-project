@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="index.css"/>
+	</head>
+	<body>
+		<button id="publish">发布</button>
+		<div id="wrap">
+				<div class="title">发布信息
+					<span><a id="closeBtn" href="javascrpit:;">X</a></span>
+				</div>
+				<div class="userName-input">
+					<div class="userName">
+						<label>用户名</label>
+						<input type="text" placeholder="请输入用户名" class="nameinput"/>
+					</div>
+				</div>
+				<input type="text" class="edit"/>
+				<div id="sent">
+					<a href="javascript:;">确认发布</a>
+				</div>
+			</div>
+		<div id="bg"></div>
+		
+		<script src="tools.js"></script>
+		<script>
+			class Publish {
+					constructor(btn) {
+						this.btn= document.querySelector("#publish");
+						this.bg = document.querySelector("#bg");
+						this.wrap = document.querySelector("#wrap");
+						this.closeBtn = this.wrap.querySelector("#closeBtn");
+						this.sent = this.wrap.querySelector("#sent");
+						this.bindEvents();
+						console.log(this.bg);
+					}
+
+					//给最上的发布按钮绑事件
+					bindEvents () {
+						let _this = this;
+						this.btn.onclick = function () {
+							
+							_this.wrap.style.display = "block";
+							_this.bg.style.display = "block";
+							tools.showCenter(_this.wrap);
+						}
+						//删除按钮绑事件
+						this.closeBtn.onclick = function () {
+							_this.wrap.style.display = "none";
+							document.body.removeChild(_this.bg);
+						}
+						this.sent.onclick = function () {
+							_this.time = new Date()
+							_this.wrap.style.display = "none";
+							_this.bg.parentNode.removeChild(_this.bg);
+							let box = document.createElement("div");
+							_this.box = document.body.appendChild(box);
+							_this.box.classList.add(".box");
+							_this.box.innerHTML = "用户：" + document.querySelector(".nameinput").value +"<br>"+document.querySelector(".edit").value+"<br>"+ _this.time;
+						}
+					}
+				}
+			
+			new Publish("#publish");
+		</script>
+	</body>
+</html>

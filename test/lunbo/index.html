@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="index.css"/>
+	</head>
+	<body>
+		<div id="box">
+			<ul>
+				<li><a href="javascropt:;"><img src="imgs/1.jpg"/></a></li>
+				<li><a href="javascropt:;"><img src="imgs/2.jpg"/></a></li>
+				<li><a href="javascropt:;"><img src="imgs/3.jpg"/></a></li>
+				<li><a href="javascropt:;"><img src="imgs/4.jpg"/></a></li>
+				<li><a href="javascropt:;"><img src="imgs/5.jpg"/></a></li>
+				<li><a href="javascropt:;"><img src="imgs/1.jpg"/></a></li>
+			</ul>
+			<ol>
+				<!--<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>-->
+			</ol>
+			<div id="arr">
+				<span class="left">&lt;</span>
+				<span class="right">&gt;</span>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var box = document.querySelector("#box");
+			var ul = box.querySelector("ul");
+			var list = ul.children;
+			var imgs = ul.querySelectorAll("img"); 
+			var ol = box.querySelector("ol");
+			var arr = box.querySelector("#arr")
+			var right = arr.querySelector(".right");
+			var left = arr.querySelector(".left");
+			var index = 0;
+				
+			for(var i = 0; i < list.length-1; i++){
+				var btns = document.createElement("li");
+				ol.appendChild(btns);
+				btns.innerHTML =(i+1);
+				//在每个ol中的li标签上添加一个自定义属性，存储索引值
+				btns.setAttribute("index", i);
+				//绑定鼠标进入事件
+				btns.onmouseenter = function () {
+					//先去掉ol中所有的li里的背景颜色
+					for(var j = 0; j < ol.children.length; j++){
+						ol.children[j].classList.remove("ac");
+					}
+					//设置鼠标进来的当前li的背景颜色
+					this.className = "ac";
+					//获取当前鼠标进来的li的当前索引值
+					index = this.getAttribute("index");
+					//移动ul
+					animate(ul, -index * imgs[length].offsetWidth);
+				}	
+			}
+				
+			//设置ol中的第一个li有背景颜色
+			ol.children[0].classList.add("ac");
+				
+			//自动播放
+			function autoPlay () {
+				timer = setInterval(function () {
+					right.onclick();
+				},2000)
+			}
+			autoPlay();
+				
+			//鼠标进入box的div，显示左右箭头的div并停止定时器
+			box.onmouseenter = function () {
+				arr.style.display = "block";
+				clearInterval(timer);
+			}
+			//鼠标离开box的div，隐藏左右箭头的div,再次启动定时器
+			box.onmouseleave = function () {
+				arr.style.display = "none";
+				autoPlay();
+			}
+				
+			//右边按钮
+			right.onclick = function () {
+			/*如果pic是5，恰好是ul中li的length-1，此时页面中显示的是第六个li中的图，而用户会认为这是第一张
+			* 图，所以此时用户再次点击按钮，应该是看到第二个li中的图。
+			*/
+				
+				if(index === list.length-1){
+				//从第六张图跳到第二张图。先设置pic（索引）=0
+					index = 0;
+				//把ul的位置还原到开始的默认位置
+					ul.style.left = 0 + "px";
+				}
+				//还原到开始默认位置后，pic立即加1，此时用户看到的就是第二个li中的图了
+				index++;
+				//pic从0加到1后，pic的值为1.然后ul移动出一个图片
+				animate(ul, -index * imgs[length].offsetWidth);
+				//如果pic是5，页面显示的是第六张图，1号按钮应有变色
+				if(index === list.length-1){
+				//去掉5号按钮的颜色
+				ol.children[ol.children.length-1].className = "";
+				//1号按钮设置上颜色
+				ol.children[0].className = "ac";
+				}else {
+				//去掉所有按钮的颜色
+						for(var i = 0; i < ol.children.length; i++){
+							ol.children[i].classList.remove("ac");
+						}
+					//给pic对应的按钮设置颜色
+						ol.children[index].className = "ac";
+				}
+		
+			}
+				
+				//左边按钮
+			left.onclick = function () {
+			/* 如果pic=0,对应ul中的第一张图,点击按钮应跳到pic为5的第六张图
+			*/ 
+				if(index === 0){
+				//从第一张图跳转到ul中最后一张图,pic(索引)list.length-1
+					index = list.length-1;
+					//ul位置移动到最后一张图位置
+					ul.style.left = -index * imgs[length].offsetWidth + "px";
+				}
+					//ul位置移动后立即pic减一个
+				index--;
+				animate(ul, -index * imgs[length].offsetWidth);
+					//去掉ol里li按钮的颜色
+				for(var i = 0; i < ol.children.length; i++){
+					ol.children[i].classList.remove("ac");
+				}
+					//给pic对应的按钮设置颜色
+					ol.children[index].className = "ac";
+			}
+				
+				
+			function animate(element, end) {
+				//清理上一次的定时器
+				clearInterval(element.timer);
+				//定时器的值存储到对象的一个属性中
+				element.timer = setInterval(function () {
+					//获取元素当前的位置，数字类型
+					var start = element.offsetLeft;
+					//每次移动的距离
+					var step = 10;
+					//从左往右走是正数。从右往左走是负数，判断是走的正数还是负数
+					step = start < end ? step : -step;
+					//当前移动到的位置
+					start += step;
+					if(Math.abs(start - end) > Math.abs(step)) {
+						element.style.left = start + "px";
+					}else {
+						//清理定时器
+						clearInterval(element.timer);
+						//直接到达目标
+						element.style.left = end + "px";
+					}
+				},20)
+			}
+		</script>
+	</body>
+</html>
